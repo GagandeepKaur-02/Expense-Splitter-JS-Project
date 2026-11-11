@@ -61,6 +61,17 @@ addMemberForm.addEventListener("submit", (e) => {
     renderAll();
 });
 
+const SPLIT_BOX_COLORS = [
+    { border: "#FF4D8D", accent: "#FF4D8D" }, // Neon Flamingo Pink
+    { border: "#FFD166", accent: "#FFD166" }, // Warm Sunburst Gold
+    { border: "#06D6A0", accent: "#06D6A0" }, // Electric Mint Green
+    { border: "#C084FC", accent: "#C084FC" }, // Royal Orchid Purple
+    { border: "#FF8A5B", accent: "#FF8A5B" }, // Vibrant Sunset Coral
+    { border: "#A3E635", accent: "#A3E635" }, // Cyber Lime
+    { border: "#F472B6", accent: "#F472B6" }, // Sakura Rose
+    { border: "#FACC15", accent: "#FACC15" }  // Bright Canary Yellow
+];
+
 function renderMembers() {
     const memberList = getElementById("members-list");
     memberList.innerHTML = ""
@@ -81,19 +92,22 @@ function renderMembers() {
     allMembers.forEach(({ id, name }) => {
         let li = document.createElement("li");
         li.innerHTML = `
-           <li class="flex items-center justify-between py-2.5 px-1 hover:bg-slate-100/50 transition-colors gap-2">
+           <li class="flex items-center justify-between py-2.5 px-1 hover:bg-white/5 rounded-xl transition-colors gap-2">
                 <div class="flex items-center gap-3 min-w-0 flex-1">
-                  <span class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-mono font-medium text-white shrink-0 select-none" style="background-color: #2F6B4F;">
+                <span class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-mono font-bold text-[#040711] shrink-0 select-none shadow-[0_0_10px_rgba(0,245,212,0.4)]" style="background: linear-gradient(135deg, #00F5D4, #00BBF9);"> 
                     ${name[0].toUpperCase()}
-                  </span>
-                  <span class="font-sans text-sm font-medium text-ledger-ink truncate break-words">${name}</span>
+                </span>
+                 <span class="font-sans text-sm font-semibold text-slate-100 truncate break-words">
+                    ${name}
+                 </span>
                 </div>
-                <button type="button" class="remove-member-btn text-ledger-muted hover:text-ledger-rust p-2 rounded-sm transition-colors cursor-pointer shrink-0 ml-2 min-w-[36px] min-h-[36px] flex items-center justify-center" data-id=${id} title="Remove ram" aria-label="Remove ram">
+                <button type="button" class="remove-member-btn text-ledger-muted hover:text-ledger-rust p-2 rounded-sm transition-colors cursor-pointer shrink-0 ml-2 min-w-[36px] min-h-[36px] flex items-center justify-center" data-id=${id} title="Remove ${name}" aria-label="Remove ${name}">
                   <svg class="w-4 h-4 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                   </svg>
                 </button>
               </li>`;
+
         memberList.append(li);
     });
 
@@ -128,23 +142,31 @@ function renderMembers() {
     } else {
         expenseMembersWarning.classList.add('hidden')
         addExpenseForm.classList.remove('hidden');
+        allMembers.forEach(({ id, name }, index) => {
+            const color = SPLIT_BOX_COLORS[index % SPLIT_BOX_COLORS.length];
 
-        allMembers.forEach(({ id, name }) => {
             let option = document.createElement("option");
             option.value = id;
             option.textContent = name;
             expensePayerSelect.append(option);
 
             let label = document.createElement("label");
-            label.className = "flex items-center gap-2.5 text-xs font-sans text-ledger-ink cursor-pointer hover:bg-slate-100/60 px-2 py-2 rounded-sm select-none border border-transparent hover:border-ledger-border transition-colors min-h-[36px]";
+            label.className = "flex items-center gap-2.5 text-xs font-sans text-slate-100 cursor-pointer bg-[#0F1526]/80 px-3 py-2 rounded-lg select-none border transition-all min-h-[38px]";
+            label.style.borderColor = color.border;
 
             label.innerHTML = `                  
-                <input type="checkbox" value=${id} class="split-member-checkbox rounded-sm text-ledger-forest accent-[#2F6B4F] cursor-pointer w-4 h-4 shrink-0" checked>
-                <span class="truncate break-all min-w-0">${name}</span>`
+                <input type="checkbox" value="${id}" class="split-member-checkbox rounded cursor-pointer w-4 h-4 shrink-0" style="accent-color: ${color.accent};" checked>
+                <span class="truncate break-all min-w-0 font-medium">${name}</span>`;
+
+            const checkbox = label.querySelector("input");
+            checkbox.addEventListener("change", () => {
+                label.style.borderColor = checkbox.checked ? color.border : "rgba(255, 255, 255, 0.1)";
+            });
+
             splitMembersContainer.append(label);
         });
-    }
 
+    }
 
     validateAddExpenseForm();
     renderBalance();
@@ -265,31 +287,31 @@ function renderExpense() {
         const li = document.createElement("li");
         const splitMemberNames = splitMember.map((mem) => getNameById(mem)).join(", ");
 
-        li.className = "py-3 px-1 hover:bg-slate-100/50 transition-colors";
+        li.className = "py-3 px-1.5 hover:bg-white/5 rounded-lg transition-colors";
 
         li.innerHTML = `
                 <div class="flex items-start justify-between gap-3 sm:gap-4">
                   <div class="min-w-0 flex-1">
                     <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 sm:gap-2">
-                      <h3 class="font-sans text-sm sm:text-base font-semibold text-ledger-ink break-words min-w-0">
+                      <h3 class="font-sans text-sm sm:text-base font-semibold text-white break-words min-w-0">
                         ${title}
                       </h3>
                       <div class="flex items-baseline gap-2 shrink-0 self-start sm:self-auto">
-                        <span class="font-mono text-sm sm:text-base font-semibold text-ledger-ink">
+                        <span class="font-mono text-sm sm:text-base font-semibold text-white">
                           ₹${amount}
                         </span>
-                        <span class="font-mono text-xs text-ledger-muted">
+                        <span class="font-mono text-xs text-slate-400">
                           (₹${amount / splitMember.length}/ person)
                         </span>
                       </div>
                     </div>
-                    <div class="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1 text-xs text-ledger-muted font-sans">
-                      <span>Paid by <strong class="font-medium text-ledger-ink">${getNameById(payer)}</strong></span>
-                      <span class="text-ledger-border">•</span>
-                      <span>Split between: <span class="text-ledger-ink font-medium break-words">${splitMemberNames}</span></span>
+                    <div class="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1 text-xs text-slate-400 font-sans">
+                      <span>Paid by <strong class="font-medium text-[#00BBF9]">${getNameById(payer)}</strong></span>
+                      <span class="text-slate-600">•</span>
+                      <span>Split between: <span class="text-slate-200 font-medium break-words">${splitMemberNames}</span></span>
                     </div>
                   </div>
-                  <button type="button" class="delete-expense-btn text-ledger-muted hover:text-ledger-rust p-2 rounded-sm transition-colors cursor-pointer shrink-0 ml-1 min-w-[36px] min-h-[36px] flex items-center justify-center" data-id=${id} title="Delete Groceries" aria-label="Delete Groceries">
+                  <button type="button" class="delete-expense-btn text-ledger-muted hover:text-ledger-rust p-2 rounded-sm transition-colors cursor-pointer shrink-0 ml-1 min-w-[36px] min-h-[36px] flex items-center justify-center" data-id=${id} title="Delete ${title}" aria-label="Delete ${title}">
                     <svg class="w-4 h-4 pointer-events-none" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                     </svg>
@@ -335,37 +357,46 @@ function renderBalance() {
         let paid = 0;
         let owed = 0;
 
-        expenses.forEach(({amount, splitMember, payer}) => {
+        expenses.forEach(({ amount, splitMember, payer }) => {
             const expAmount = Number(amount);
-            if (payer === id){
+            if (payer === id) {
                 paid = paid + expAmount;
             }
-            if (splitMember.includes(id) && splitMember.length > 0){
+            if (splitMember.includes(id) && splitMember.length > 0) {
                 owed = owed + expAmount / splitMember.length;
             }
         })
 
         let net = paid - owed;
-        let statusElement = `<span class = "text-ledger-muted">settled up</span>`;
+        let statusElement = `<span class="text-slate-400">settled up</span>`;
         if (net > 0) {
-            statusElement = `<span class="text-ledger-forest font-medium">gets back ₹${Math.abs(net)}</span>`;
+            statusElement = `<span class="text-[#C084FC] font-semibold">gets back ₹${Math.abs(net)}</span>`;
         } else if (net < 0) {
-            statusElement = `<span class="text-ledger-rust font-medium">owes ₹${Math.abs(net)}</span>`;
+            statusElement = `<span class="text-[#FF4D6D] font-semibold">owes ₹${Math.abs(net)}</span>`;
         }
 
+
+        const styles = [
+            "background: linear-gradient(135deg, #00BBF9, #6366F1); box-shadow: 0 0 10px rgba(0, 245, 212, 0.4);",
+            "background: linear-gradient(135deg, #4F75FF, #5E60CE); box-shadow: 0 0 10px rgba(79, 117, 255, 0.4);",
+            "background: linear-gradient(135deg, #D946EF, #EC4899); box-shadow: 0 0 10px rgba(217, 70, 239, 0.4);"
+        ];
+        const circleStyle = styles[name.length % styles.length];
+
         const li = document.createElement("li");
-        li.className = "flex items-center justify-between py-2.5 px-1 hover:bg-slate-100/50 transition-colors gap-3"
+        li.className = "flex items-center justify-between py-2.5 px-1.5 hover:bg-white/5 rounded-lg transition-colors gap-3";
         li.innerHTML = `
-                <div class="flex items-center gap-3 min-w-0 flex-1">
-                  <span class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-mono font-medium text-white shrink-0 select-none" style="background-color: #8C5E58;">
-                    ${name[0].toUpperCase()}
-                  </span>
-                  <span class="font-sans text-sm font-medium text-ledger-ink truncate break-words">${name}</span>
-                </div>
-                <div class="font-mono text-sm shrink-0 ml-2 text-right">
-                  ${statusElement}
-                </div>
-                `
+        <div class="flex items-center gap-3 min-w-0 flex-1">
+            <span class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-mono font-bold text-white shrink-0 select-none" style="${circleStyle}">
+            ${name[0].toUpperCase()}
+            </span>
+            <span class="font-sans text-sm font-medium text-slate-100 truncate break-words">${name}</span>
+        </div>
+        <div class="font-mono text-sm shrink-0 ml-2 text-right">
+            ${statusElement}
+        </div>
+        `;
+
         balancesList.append(li);
     })
 }
