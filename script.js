@@ -14,7 +14,32 @@ const splitMembersContainer = getElementById("split-members-container");
 const splitSelectAllBtn = getElementById("split-select-all-btn");
 const splitClearAllBtn = getElementById("split-clear-all-btn");
 const addExpenseForm = getElementById("add-expense-form");
+const clearAllDefault = getElementById("clear-all-default");
 
+const balancesList = getElementById("balances-list");
+const balancesHelperText = getElementById("balances-helper-text");
+const balancesEmpty = getElementById("balances-empty");
+
+const expensesEmpty = getElementById("expenses-empty");
+const expensesList = getElementById("expenses-list");
+const expensesCount = getElementById("expenses-count");
+
+const clearAllBtnContainer = document.getElementById('clear-all-default');
+const clearAllBtn = document.getElementById('clear-all-btn');
+const resetConfirmUi = document.getElementById('reset-confirm-ui');
+const cancelResetBtn = document.getElementById('cancel-reset-btn');
+const yesResetBtn = document.getElementById('yes-reset-btn');
+
+const SPLIT_BOX_COLORS = [
+    { border: "#FF4D8D", accent: "#FF4D8D" }, // Neon Flamingo Pink
+    { border: "#FFD166", accent: "#FFD166" }, // Warm Sunburst Gold
+    { border: "#06D6A0", accent: "#06D6A0" }, // Electric Mint Green
+    { border: "#C084FC", accent: "#C084FC" }, // Royal Orchid Purple
+    { border: "#FF8A5B", accent: "#FF8A5B" }, // Vibrant Sunset Coral
+    { border: "#A3E635", accent: "#A3E635" }, // Cyber Lime
+    { border: "#F472B6", accent: "#F472B6" }, // Sakura Rose
+    { border: "#FACC15", accent: "#FACC15" }  // Bright Canary Yellow
+];
 
 const MEMBERS_LOCALSTORAGE_KEY = "members"
 const EXPENSE_LOCALSTORAGE_KEY = "expenses"
@@ -35,42 +60,6 @@ function getRandomBadgeColor() {
     let randomIndex = Math.floor(Math.random() * BADGE_COLORS.length);
     return BADGE_COLORS[randomIndex]
 }
-
-addMemberForm.addEventListener("submit", (e) => {
-    e.preventDefault()
-    const value = document.querySelector("#member-name-input").value.trim();
-    p.classList.add("hidden");
-    if (!value) {
-        p.textContent = "Please enter a name.";
-        p.classList.remove("hidden");
-        return;
-    }
-
-    const isMemberAlreadyExist = allMembers.some(({ name }) => name.toLowerCase() === value.toLowerCase())
-    if (isMemberAlreadyExist) {
-        p.textContent = "A member with this name already exists.";
-        p.classList.remove("hidden");
-        return;
-    }
-
-
-    allMembers = [...allMembers, { name: value, id: `mem_${Date.now()}` }];
-    setItems(MEMBERS_LOCALSTORAGE_KEY, allMembers);
-
-    getElementById("member-name-input").value = ""
-    renderAll();
-});
-
-const SPLIT_BOX_COLORS = [
-    { border: "#FF4D8D", accent: "#FF4D8D" }, // Neon Flamingo Pink
-    { border: "#FFD166", accent: "#FFD166" }, // Warm Sunburst Gold
-    { border: "#06D6A0", accent: "#06D6A0" }, // Electric Mint Green
-    { border: "#C084FC", accent: "#C084FC" }, // Royal Orchid Purple
-    { border: "#FF8A5B", accent: "#FF8A5B" }, // Vibrant Sunset Coral
-    { border: "#A3E635", accent: "#A3E635" }, // Cyber Lime
-    { border: "#F472B6", accent: "#F472B6" }, // Sakura Rose
-    { border: "#FACC15", accent: "#FACC15" }  // Bright Canary Yellow
-];
 
 function renderMembers() {
     const memberList = getElementById("members-list");
@@ -262,10 +251,6 @@ function addExpenseFormReset() {
     expensePayerSelect.value = ""
 }
 
-const expensesEmpty = getElementById("expenses-empty");
-const expensesList = getElementById("expenses-list");
-const expensesCount = getElementById("expenses-count");
-
 function getNameById(id) {
     const result = allMembers.find((mem) => mem.id == id);
     return result?.name || "Anonymous";
@@ -337,9 +322,6 @@ function renderExpense() {
     })
 }
 
-const balancesList = getElementById("balances-list");
-const balancesHelperText = getElementById("balances-helper-text");
-const balancesEmpty = getElementById("balances-empty");
 
 function renderBalance() {
     balancesList.innerHTML = ""
@@ -408,3 +390,53 @@ function renderAll() {
     renderBalance();
 }
 renderAll()
+
+addMemberForm.addEventListener("submit", (e) => {
+    e.preventDefault()
+    const value = document.querySelector("#member-name-input").value.trim();
+    p.classList.add("hidden");
+    if (!value) {
+        p.textContent = "Please enter a name.";
+        p.classList.remove("hidden");
+        return;
+    }
+
+    const isMemberAlreadyExist = allMembers.some(({ name }) => name.toLowerCase() === value.toLowerCase())
+    if (isMemberAlreadyExist) {
+        p.textContent = "A member with this name already exists.";
+        p.classList.remove("hidden");
+        return;
+    }
+
+
+    allMembers = [...allMembers, { name: value, id: `mem_${Date.now()}` }];
+    setItems(MEMBERS_LOCALSTORAGE_KEY, allMembers);
+
+    getElementById("member-name-input").value = ""
+    renderAll();
+});
+
+clearAllBtn.addEventListener('click', () => {
+    clearAllBtnContainer.classList.add('hidden');
+    resetConfirmUi.classList.remove('hidden');
+});
+
+cancelResetBtn.addEventListener('click', () => {
+    resetConfirmUi.classList.add('hidden');
+    clearAllBtnContainer.classList.remove('hidden');
+});
+
+yesResetBtn.addEventListener('click', () => {
+    localStorage.removeItem(MEMBERS_LOCALSTORAGE_KEY); 
+    localStorage.removeItem(EXPENSE_LOCALSTORAGE_KEY);
+
+    allMembers = [];
+    expenses = [];
+
+    if (typeof renderAll === 'function') {
+        renderAll();
+    }
+
+    resetConfirmUi.classList.add('hidden');
+    clearAllBtnContainer.classList.remove('hidden');
+});
