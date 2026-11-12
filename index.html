@@ -113,23 +113,23 @@
                         class="w-2.5 h-2.5 rounded-full bg-[#00F5D4] shadow-[0_0_10px_#00F5D4]"></span>Group Members
                 </h2>
                 <span id="members-count"
-                    class="font-mono text-xs text-slate-300 bg-white/5 border border-white/10  px-3 py-1 rounded-full">3
+                    class="font-mono text-xs text-slate-300 bg-white/5 border border-white/10 whitespace-nowrap shrink-0 px-3 py-1 rounded-full">3
                     members</span>
             </div>
             <div id="members-content">
-                <form id="add-member-form" class="flex gap-2.5 items-center mb-2">
+                <form id="add-member-form" class="flex gap-2 sm:gap-2.5 items-center mb-2 w-full">
                     <input type="text" id="member-name-input" placeholder="Add person name..."
-                        class="flex-1 bg-[#070B18]/85 border border-slate-700/70 px-3.5 py-2.5 text-sm text-white placeholder:text-slate-500 rounded-xl focus:outline-none focus:border-[#00F5D4] focus:shadow-[0_0_15px_rgba(0,245,212,0.3)] transition-all font-sans"
+                        class="w-full min-w-0 flex-1 bg-[#070B18]/85 border border-slate-700/70 px-3 sm:px-3.5 py-2.5 text-sm text-white placeholder:text-slate-500 rounded-xl focus:outline-none focus:border-[#00F5D4] focus:shadow-[0_0_15px_rgba(0,245,212,0.3)] transition-all font-sans"
                         autocomplete="off">
                     <button type="submit" id="add-member-btn"
-                        class="bg-gradient-to-r from-[#00F5D4] to-[#00BBF9] hover:from-[#00BBF9] hover:to-[#6366F1] text-[#040711] hover:text-white font-bold px-4 py-2.5 text-sm rounded-xl shadow-[0_0_16px_rgba(0,245,212,0.35)] hover:shadow-[0_0_24px_rgba(0,187,249,0.65)] hover:-translate-y-0.5 active:scale-95 transition-all duration-300 focus:outline-none flex items-center gap-1.5 font-sans shrink-0 cursor-pointer">
+                        class="bg-gradient-to-r from-[#00F5D4] to-[#00BBF9] hover:from-[#00BBF9] hover:to-[#6366F1] text-[#040711] hover:text-white font-bold px-3 sm:px-4 py-2.5 text-sm rounded-xl shadow-[0_0_16px_rgba(0,245,212,0.35)] hover:shadow-[0_0_24px_rgba(0,187,249,0.65)] hover:-translate-y-0.5 active:scale-95 transition-all duration-300 focus:outline-none flex items-center gap-1 sm:gap-1.5 font-sans shrink-0 cursor-pointer">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
                         </svg>
                         <span>Add</span>
                     </button>
-
                 </form>
+
 
                 <p id="member-error-msg" class="text-xs text-[#FF4D6D] mb-3 hidden font-sans font-medium"></p>
 
